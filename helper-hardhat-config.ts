@@ -1,6 +1,7 @@
 export interface networkConfigItem {
     ethUsdPriceFeed?: string
     name?: string
+    blockConfirmations?: number
 }
 
 export interface networkConfigInfo {
@@ -10,7 +11,8 @@ export interface networkConfigInfo {
 export const networkConfig: networkConfigInfo = {
     11155111: {
         name: "sepolia",
-        ethUsdPriceFeed: "0x694AA1769357215DE4FAC081bf1f309aDC325306"
+        ethUsdPriceFeed: "0x694AA1769357215DE4FAC081bf1f309aDC325306",
+        blockConfirmations: 6
     },
     137: {
         name: "polygon",
@@ -18,7 +20,7 @@ export const networkConfig: networkConfigInfo = {
     }
 }
 
-export const devolpmentChains = ["hardhat", "localhost"]
+export const developmentChains = ["hardhat", "localhost"]
 
 export const DECIMALS = 8
 export const INITIAL_ANSWER = 200000000000

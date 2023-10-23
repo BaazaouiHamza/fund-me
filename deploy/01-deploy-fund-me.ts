@@ -1,6 +1,7 @@
+import verify from './../utils/verify';
 import { network } from "hardhat";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
-import { devolpmentChains, networkConfig } from '../helper-hardhat-config'
+import { developmentChains, networkConfig } from '../helper-hardhat-config'
 
 const deployFundMe = async ({ getNamedAccounts, deployments }: HardhatRuntimeEnvironment) => {
     const { deploy, log } = deployments
@@ -10,7 +11,7 @@ const deployFundMe = async ({ getNamedAccounts, deployments }: HardhatRuntimeEnv
     // if chainId is X use address Y
     // const ethUsdPriceFeedAddress = networkConfig[chainId!]["ethUsdPriceFeed"]
     let ethUsdPriceFeedAddress
-    if (devolpmentChains.includes(network.name)) {
+    if (developmentChains.includes(network.name)) {
         const ethUsdAggregator = await deployments.get("MockV3Aggregator")
         ethUsdPriceFeedAddress = ethUsdAggregator.address
     } else {
@@ -23,14 +24,20 @@ const deployFundMe = async ({ getNamedAccounts, deployments }: HardhatRuntimeEnv
 
     // well what happens when we want to change chains?
     // when going for localhost or hardhat network we want to use a mock
+    const args = [ethUsdPriceFeedAddress]
     const FundMe = await deploy("FundMe", {
         from: deployer,
-        args: [ethUsdPriceFeedAddress],// put price feed address,
-        log: true
+        args: args,
+        log: true,
+        waitConfirmations: networkConfig[chainId!].blockConfirmations || 1
     })
+
+    if (!developmentChains.includes(network.name) && process.env.ETHER_SCAN_API_KEY) {
+        await verify(FundMe.address, args)
+    }
     log("------------------------------------------------------------------")
 }
 
 export default deployFundMe
 
-deployFundMe.tags = ["all","fundme"]
+deployFundMe.tags = ["all", "fundme"]
