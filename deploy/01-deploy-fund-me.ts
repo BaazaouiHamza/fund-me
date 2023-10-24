@@ -29,7 +29,7 @@ const deployFundMe = async ({ getNamedAccounts, deployments }: HardhatRuntimeEnv
         from: deployer,
         args: args,
         log: true,
-        waitConfirmations: networkConfig[chainId!].blockConfirmations || 1
+        // waitConfirmations: networkConfig[chainId!].blockConfirmations || 1
     })
 
     if (!developmentChains.includes(network.name) && process.env.ETHER_SCAN_API_KEY) {
